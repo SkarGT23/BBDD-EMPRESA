@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<style>
+    h1 {
+        font-family: Arial, sans-serif;
+        color: #2c3e50;
+        font-size: 28px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    p {
+        font-family: Arial, sans-serif;
+        color: #555;
+        font-size: 16px;
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        max-width: 500px;
+        margin: 0 auto; /* Centrado del párrafo */
+        text-align: center;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px; /* Espaciado entre los botones */
+        margin-top: 30px;
+    }
+
+    .button-container a {
+        display: inline-block;
+        padding: 12px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        background-color: #3498db;
+        color: white;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .button-container a:hover {
+        background-color: #2980b9;
+        transform: translateY(-3px);
+    }
+
+    .button-container a:active {
+        transform: translateY(1px);
+    }
+
+    .btn-promocion {
+        padding: 20px 40px;
+        font-size: 20px;
+    }
+</style>
+
+<h1>Bienvenido a la Plataforma de Gestión</h1>
+<p>Usa el menú superior para navegar entre las opciones principales del sistema.</p>
+
+<!-- Contenedor de botones -->
+
+<div class="button-container">
+    <a href="{{ url_for('ver_productos') }}" class="btn-promocion">Ver productos</a>
+    <a href="{{ url_for('mostrar_usuarios') }}" class="btn-promocion">Ver usuarios</a>
+    <a href="{{ url_for('buscar_usuario') }}" class="btn-promocion">Buscar usuarios</a>
+    <a href="{{ url_for('ver_promociones') }}" class="btn-promocion">Promociones</a>
+    <a href="{{ url_for('ver_proveedores') }}" class="btn-promocion">Proveedores</a>
+    <a href="{{ url_for('zona_notas') }}" class="btn-promocion">Notas</a>
+</div>
+
+{% endblock %}

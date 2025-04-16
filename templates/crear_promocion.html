@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Promoción</title>
+    <style>
+        .btn-promocion {
+            background-color: green;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn-promocion:hover {
+            background-color: darkgreen;
+        }
+        .form-promocion {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 50%;
+        }
+        .form-promocion input,
+        .form-promocion select {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Crear Promoción</h1>
+    <form method="POST" action="{{ url_for('crear_promocion') }}" class="form-promocion">
+        <label for="nombre">Nombre de la Promoción:</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Ej: Oferta Primavera" required value="{{ request.form.nombre }}">
+
+        <label for="tipo_promocion">Tipo de Promoción:</label>
+        <select id="tipo_promocion" name="tipo_promocion" required>
+            <option value="descuento" {% if request.form.tipo_promocion == 'descuento' %}selected{% endif %}>Descuento Porcentual</option>
+            <option value="2x1" {% if request.form.tipo_promocion == '2x1' %}selected{% endif %}>2x1</option>
+            <option value="3x1" {% if request.form.tipo_promocion == '3x1' %}selected{% endif %}>3x1</option>
+        </select>
+
+        <label for="valor">Valor de la Promoción (% o cantidad):</label>
+        <input type="number" id="valor" name="valor" step="0.01" placeholder="Ej: 20 para 20%" required value="{{ request.form.valor }}">
+
+        <label for="fecha_inicio">Fecha de Inicio:</label>
+        <input type="date" id="fecha_inicio" name="fecha_inicio" required value="{{ request.form.fecha_inicio }}">
+
+        <label for="fecha_fin">Fecha de Fin:</label>
+        <input type="date" id="fecha_fin" name="fecha_fin" required value="{{ request.form.fecha_fin }}">
+
+        <label for="buscador">Buscar producto:</label>
+        <input type="text" id="buscador" placeholder="Filtrar por nombre o descripción..." onkeyup="filtrarProductos()">
+        <div style="max-height:180px;overflow:auto;border:1px solid #ccc;border-radius:5px;padding:8px 4px;margin-bottom:14px;">
+            {% for producto in productos %}
+            <div class="producto-item">
+                <input type="checkbox" id="prod{{ producto.id }}" name="productos" value="{{ producto.id }}" {% if producto.id|string in request.form.getlist('productos') %}checked{% endif %}>
+                <label for="prod{{ producto.id }}">{{ producto.nombre }} - {{ producto.descripcion }}</label>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn-promocion">Crear Promoción</button>
+    </form>
+    <script>
+    function filtrarProductos() {
+        var input = document.getElementById('buscador');
+        var filter = input.value.toLowerCase();
+        var items = document.getElementsByClassName('producto-item');
+        for (var i = 0; i < items.length; i++) {
+            var txt = items[i].innerText.toLowerCase();
+            items[i].style.display = txt.includes(filter) ? '' : 'none';
+        }
+    }
+    </script>
+</body>
+</html>

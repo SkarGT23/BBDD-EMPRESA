@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Productos</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 6px 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        tfoot td {
+            font-weight: bold;
+            background-color: #e0e0e0;
+        }
+
+        /* Estilo para el botón Añadir a Promoción */
+        .btn-promocion {
+            background-color: green;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block; /* Para que el enlace se vea como un botón */
+            margin-top: 5px; /* Separación entre botones */
+        }
+
+        .btn-promocion:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Lista de Productos</h1>
+<a href="{{ url_for('agregar_producto') }}" class="btn-promocion">Agregar Nuevo Producto</a>
+
+<!-- Formulario de búsqueda -->
+<form method="GET" action="{{ url_for('ver_productos') }}" style="margin-bottom:24px;">
+    <label for="nombre">Nombre del Producto:</label>
+    <input type="text" id="nombre" name="nombre" value="{{ request.args.get('nombre', '') }}">
+    <label for="proveedor">Proveedor:</label>
+    <input type="text" id="proveedor" name="proveedor" value="{{ request.args.get('proveedor', '') }}">
+    <label for="importe_min">Importe mínimo:</label>
+    <input type="number" step="0.01" id="importe_min" name="importe_min" value="{{ request.args.get('importe_min', '') }}">
+    <label for="importe_max">Importe máximo:</label>
+    <input type="number" step="0.01" id="importe_max" name="importe_max" value="{{ request.args.get('importe_max', '') }}">
+    <button type="submit">Buscar</button>
+</form>
+
+    {% if productos %}
+        {% set total = [0, 0] %}
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="select_all" onclick="toggleAll(this)"></th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Valor Total</th>
+                    <th>Fecha de Agregado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <form id="form-promocion" method="POST" action="{{ url_for('agregar_a_promocion_masivo') }}">
+    <tbody>
+        {% for producto in productos %}
+            {% set valor_producto = producto.cantidad * producto.precio %}
+            {% set _ = total.__setitem__(0, total[0] + producto.cantidad) %}
+            {% set _ = total.__setitem__(1, total[1] + valor_producto) %}
+            <tr>
+                <td><input type="checkbox" name="producto_ids" value="{{ producto.id }}"></td>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.descripcion }}</td>
+                <td>{{ producto.cantidad }}</td>
+                <td>{{ '%.2f'|format(producto.precio) }} €</td>
+                <td>{{ '%.2f'|format(valor_producto) }} €</td>
+                <td>{{ producto.fecha_agregado }}</td>
+                <td>
+                    <a href="{{ url_for('eliminar_producto', id=producto.id) }}">Eliminar</a>
+                    <a href="{{ url_for('agregar_a_promocion', id=producto.id) }}" class="btn-promocion">Añadir a Promoción</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="8">
+                <button type="submit" class="btn-promocion">Añadir seleccionados a Promoción</button>
+            </td>
+        </tr>
+    </tfoot>
+</form>
+<script>
+function toggleAll(source) {
+    checkboxes = document.getElementsByName('producto_ids');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+        checkboxes[i].checked = source.checked;
+    }
+}
+</script>
+            <tfoot>
+                <tr>
+                    <td colspan="2">Totales:</td>
+                    <td>{{ total[0] }}</td>
+                    <td></td>
+                    <td>{{ '%.2f'|format(total[1]) }} €</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+    {% else %}
+        <p>No hay productos registrados.</p>
+    {% endif %}
+</body>
+</html>
+{% endblock %}

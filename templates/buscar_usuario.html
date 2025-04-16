@@ -1,0 +1,196 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<style>
+    h2, h3 {
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    form {
+        margin-bottom: 20px;
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        width: 400px;
+    }
+
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+        font-family: Arial, sans-serif;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+    }
+
+    button {
+        margin-top: 15px;
+        padding: 10px 15px;
+        background-color: #28a745;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        font-family: Arial, sans-serif;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    p {
+        font-style: italic;
+        color: #777;
+        font-family: Arial, sans-serif;
+    }
+</style>
+
+<h2>Buscar Usuarios</h2>
+
+<style>
+.busqueda-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px 32px;
+    max-width: 1200px;
+    margin: 0 auto 24px auto;
+    background: #f9f9f9;
+    padding: 32px 28px 18px 28px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.busqueda-grid label {
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+.busqueda-grid input {
+    margin-bottom: 0;
+}
+.busqueda-btn {
+    grid-column: 1 / -1;
+    justify-self: center;
+    margin-top: 10px;
+    font-size: 18px;
+}
+</style>
+<form method="POST" class="busqueda-grid">
+    <div>
+        <label>Nombre:</label>
+        <input type="text" name="nombre" value="{{ request.form.nombre }}">
+    </div>
+    <div>
+        <label>Apellidos:</label>
+        <input type="text" name="apellidos" value="{{ request.form.apellidos }}">
+    </div>
+    <div>
+        <label>DNI:</label>
+        <input type="text" name="dni" value="{{ request.form.dni }}">
+    </div>
+    <div>
+        <label>Localidad:</label>
+        <input type="text" name="localidad" value="{{ request.form.localidad }}">
+    </div>
+    <div>
+        <label>Código Postal:</label>
+        <input type="text" name="codigo_postal" value="{{ request.form.codigo_postal }}">
+    </div>
+    <div>
+        <label>Artículo comprado:</label>
+        <input type="text" name="articulo" value="{{ request.form.articulo }}">
+    </div>
+    <div>
+        <label>Edad:</label>
+        <input type="number" name="edad" value="{{ request.form.edad }}">
+    </div>
+    <div>
+        <label>Teléfono:</label>
+        <input type="text" name="telefono" value="{{ request.form.telefono }}">
+    </div>
+    <div>
+        <label>Email:</label>
+        <input type="text" name="email" value="{{ request.form.email }}">
+    </div>
+    <button type="submit" class="busqueda-btn btn-promocion">Buscar</button>
+</form>
+
+{% if usuarios is not none %}
+    <h3>Resultados:</h3>
+    {% if usuarios %}
+        <table>
+            <tr>
+    <th>ID</th>
+    <th>Nombre</th>
+    <th>Apellidos</th>
+    <th>Edad</th>
+    <th>Email</th>
+    <th>Localidad</th>
+    <th>Teléfono</th>
+    <th>DNI</th>
+    <th>Código Postal</th>
+    <th>Artículos comprados</th>
+</tr>
+{% for usuario in usuarios %}
+<tr>
+    <td>{{ usuario.id }}</td>
+    <td>{{ usuario.nombre }}</td>
+    <td>{% if usuario.apellidos is defined %}{{ usuario.apellidos }}{% endif %}</td>
+    <td>{{ usuario.edad }}</td>
+    <td>{{ usuario.email }}</td>
+    <td>{{ usuario.localidad }}</td>
+    <td>{{ usuario.telefono }}</td>
+    <td>{{ usuario.dni }}</td>
+    <td>{% if usuario.codigo_postal is defined %}{{ usuario.codigo_postal }}{% endif %}</td>
+    <td>
+        {% if usuario.pedidos %}
+            <ul style="margin:0; padding-left:18px;">
+            {% for pedido in usuario.pedidos %}
+                {% for producto in pedido.productos %}
+                    <li>{{ producto.nombre_producto }}</li>
+                {% endfor %}
+            {% endfor %}
+            </ul>
+        {% else %}
+            ---
+        {% endif %}
+    </td>
+</tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No se encontraron resultados.</p>
+    {% endif %}
+{% endif %}
+{% endblock %}

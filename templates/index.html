@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header style="margin-bottom: 30px;">
+        <h1 style="font-size: 28px; color: #1f2937; margin-bottom: 10px;">
+            Bienvenido a la base de datos <span style="color: #3b82f6;">COMPARATIVA</span> con Flask
+        </h1>
+    </header>
+
+    <nav>
+        <a href="{{ url_for('obtener_usuarios') }}">Ver Usuarios</a>
+        <a href="{{ url_for('insertar_usuario') }}">Insertar Usuario</a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Usuarios eliminados (Papelera)</h2>
+<form method="POST" action="{{ url_for('vaciar_papelera') }}">
+    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Vaciar la papelera? Esta acción no se puede deshacer.')">Vaciar papelera</button>
+</form>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Edad</th>
+        <th>Email</th>
+        <th>Localidad</th>
+        <th>Dirección</th>
+        <th>Teléfono</th>
+        <th>DNI</th>
+        <th>Cuenta Bancaria</th>
+        <th>Fecha de eliminación</th>
+    </tr>
+    {% for usuario in usuarios %}
+    <tr>
+        <td>{{ usuario.id }}</td>
+        <td>{{ usuario.nombre }}</td>
+        <td>{{ usuario.edad }}</td>
+        <td>{{ usuario.email }}</td>
+        <td>{{ usuario.localidad }}</td>
+        <td>{{ usuario.direccion }}</td>
+        <td>{{ usuario.telefono }}</td>
+        <td>{{ usuario.dni }}</td>
+        <td>{{ usuario.cuenta_bancaria }}</td>
+        <td>{{ usuario.fecha_eliminacion.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>Detalles de la Promoción</h2>
+<p><b>ID:</b> {{ promo.id }}</p>
+<p><b>Nombre:</b> {{ promo.nombre }}</p>
+<p><b>Tipo:</b> {{ promo.tipo_promocion }}</p>
+<p><b>Valor:</b> {{ promo.valor }}</p>
+<p><b>Vigencia:</b> {{ promo.fecha_inicio }} - {{ promo.fecha_fin }}</p>
+<p><b>Productos asociados:</b></p>
+<ul>
+    {% for p in promo.productos %}
+        <li>{{ p.nombre }} - {{ p.descripcion }}</li>
+    {% endfor %}
+</ul>
+<a href="{{ url_for('editar_promocion', id=promo.id) }}" class="btn-promocion">Editar</a>
+<form method="POST" action="{{ url_for('eliminar_promocion', id=promo.id) }}" style="display:inline;">
+    <button type="submit" class="btn-promocion" onclick="return confirm('¿Eliminar esta promoción?')">Eliminar</button>
+</form>
+<a href="{{ url_for('ver_promociones') }}" class="btn-promocion">Volver</a>
+{% endblock %}

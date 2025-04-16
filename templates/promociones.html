@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promociones</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f8f9fa;
+        }
+        h1 {
+            color: #2e7d32;
+            margin-bottom: 22px;
+        }
+        .btn-promocion {
+            background-color: #388e3c;
+            color: white;
+            padding: 10px 22px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+            margin: 2px 4px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 6px rgba(60,60,60,0.08);
+        }
+        .btn-promocion:hover {
+            background-color: #2e7d32;
+            box-shadow: 0 4px 12px rgba(60,60,60,0.13);
+        }
+        .flashes {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 18px 0;
+        }
+        .flash.success { color: #388e3c; background: #e8f5e9; border-left: 5px solid #388e3c; padding: 8px 16px; border-radius: 4px; margin-bottom: 4px; }
+        .flash.info { color: #1976d2; background: #e3f2fd; border-left: 5px solid #1976d2; padding: 8px 16px; border-radius: 4px; margin-bottom: 4px; }
+        .flash.warning { color: #fbc02d; background: #fffde7; border-left: 5px solid #fbc02d; padding: 8px 16px; border-radius: 4px; margin-bottom: 4px; }
+        .flash.danger { color: #c62828; background: #ffebee; border-left: 5px solid #c62828; padding: 8px 16px; border-radius: 4px; margin-bottom: 4px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(60,60,60,0.07);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        th {
+            background: #e8f5e9;
+            color: #388e3c;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f1f8e9;
+        }
+        ul {
+            margin: 0; padding-left: 18px;
+        }
+        @media (max-width: 900px) {
+            table, thead, tbody, th, td, tr { display: block; }
+            th, td { padding: 8px 6px; }
+            tr { margin-bottom: 14px; }
+        }
+    </style>
+</head>
+<body>
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Promociones</h1>
+            <a href="{{ url_for('home') }}" class="btn btn-secondary">Volver a inicio</a>
+        </div>
+        <div class="mb-3">
+            <a href="{{ url_for('crear_promocion') }}" class="btn btn-primary">Crear Nueva Promoción</a>
+        </div>
+    <form method="GET" action="{{ url_for('ver_promociones') }}" style="margin: 16px 0;">
+        <input type="text" name="buscar" placeholder="Buscar por nombre, tipo..." value="{{ request.args.get('buscar', '') }}">
+        <button type="submit">Buscar</button>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="flash {{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% if promociones %}
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr style="background:#f0f0f0;">
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Valor</th>
+                    <th>Vigencia</th>
+                    <th>Productos asociados</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for promo in promociones %}
+                <tr>
+                    <td>{{ promo.id }}</td>
+                    <td>{{ promo.nombre }}</td>
+                    <td>{{ promo.tipo_promocion }}</td>
+                    <td>{{ promo.valor }}</td>
+                    <td>{{ promo.fecha_inicio }} - {{ promo.fecha_fin }}</td>
+                    <td>
+                        {% if promo.productos %}
+                            <ul>
+                            {% for p in promo.productos %}
+                                <li>{{ p.nombre }} - {{ p.descripcion }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            <span style="color:#888;">Ninguno</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('ver_promocion', id=promo.id) }}" class="btn-promocion">Ver</a>
+                        <a href="{{ url_for('editar_promocion', id=promo.id) }}" class="btn-promocion">Editar</a>
+                        <form method="POST" action="{{ url_for('eliminar_promocion', id=promo.id) }}" style="display:inline;">
+                            <button type="submit" class="btn-promocion" onclick="return confirm('¿Eliminar esta promoción?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay promociones registradas.</p>
+    {% endif %}

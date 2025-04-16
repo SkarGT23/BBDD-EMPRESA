@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>Editar Promoción</h2>
+<form method="POST">
+    <label for="tipo_promocion">Tipo de Promoción:</label>
+    <input type="text" id="tipo_promocion" name="tipo_promocion" value="{{ promo.tipo_promocion }}" required>
+    <label for="valor">Valor:</label>
+    <input type="number" step="0.01" id="valor" name="valor" value="{{ promo.valor }}" required>
+    <label for="fecha_inicio">Fecha de Inicio:</label>
+    <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ promo.fecha_inicio }}" required>
+    <label for="fecha_fin">Fecha de Fin:</label>
+    <input type="date" id="fecha_fin" name="fecha_fin" value="{{ promo.fecha_fin }}" required>
+    <hr>
+    <label>Productos asociados:</label>
+    <ul>
+        {% for producto in todos_los_productos %}
+        <li>
+            <input type="checkbox" name="productos" value="{{ producto.id }}" {% if producto in promo.productos %}checked{% endif %}>
+            {{ producto.nombre }} - {{ producto.descripcion }}
+        </li>
+        {% endfor %}
+    </ul>
+    <button type="submit" class="btn-promocion">Guardar cambios</button>
+    <a href="{{ url_for('ver_promociones') }}" class="btn-promocion">Cancelar</a>
+</form>
+{% endblock %}
